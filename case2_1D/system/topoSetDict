@@ -1,0 +1,80 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2312                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      topoSetDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+xmin 0;
+xmax 0.0805;
+
+ymin 0;
+ymax #calc "($xmax/10)";
+
+zmin 0;
+zmax #calc "($ymax)/2";
+
+x_seperate_particle 0.00175;
+
+x_seperate_tubeThickness 0.0035;
+xmin_tubeThickness    #calc   "$x_seperate_particle + 0.0105";
+xmax_tubeThickness    #calc  "$xmin_tubeThickness + $x_seperate_tubeThickness";
+
+actions
+(
+  // SOLID_Particle
+    {
+        name    SOLID_Particle;
+        type    cellSet;
+        action  new;
+        source  boxToCell;
+        sourceInfo
+        {
+            box ($xmin $ymin $zmin) ($x_seperate_particle $ymax $zmax);
+        }
+    }
+    
+    {
+        name    SOLID_Particle;
+        type    cellZoneSet;
+        action  new;
+        source  setToCellZone;
+        sourceInfo
+        {
+            set SOLID_Particle;
+        }
+    }  
+     
+	// SOLID_Tube_Thickness
+    {
+        name    SOLID_Thickness;
+        type    cellSet;
+        action  new;
+        source  boxToCell;
+        sourceInfo
+        {
+            box ($xmin_tubeThickness $ymin $zmin) ($xmax_tubeThickness $ymax $zmax);
+        }
+    }
+    
+    {
+        name    SOLID_Thickness;
+        type    cellZoneSet;
+        action  new;
+        source  setToCellZone;
+        sourceInfo
+        {
+            set SOLID_Thickness;
+        }
+    }       
+);
+
+// ************************************************************************* //
