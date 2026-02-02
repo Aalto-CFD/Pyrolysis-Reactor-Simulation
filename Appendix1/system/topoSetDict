@@ -1,0 +1,94 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2312                                |
+|   \\  /    A nd           | Web:      www.openfoam.com                        |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      topoSetDict;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+x_length  	        2.4;
+Y_Height  	        0.12;
+Solid_thickness	0.01;
+Y_min_pipe	        $Solid_thickness;
+Y_max_pipe	        #calc "$Y_Height-$Solid_thickness";
+z_thickness 	      0.01;
+
+actions
+(
+    // pipe
+    {
+        name    pipe;
+        type    cellSet;
+        action  new;
+        source  boxToCell;
+        sourceInfo
+        {
+            box (0  $Y_min_pipe  0)($x_length  $Y_max_pipe  $z_thickness);
+        }
+    }
+    {
+        name    pipe;
+        type    cellZoneSet;
+        action  new;
+        source  setToCellZone;
+        sourceInfo
+        {
+            set pipe;
+        }
+    }
+
+    // topSolid
+    {
+        name    topSolid;
+        type    cellSet;
+        action  new;
+        source  boxToCell;
+        sourceInfo
+        {
+            box (0  $Y_max_pipe  0)($x_length  $Y_Height  $z_thickness);
+        }
+    }
+    {
+        name    topSolid;
+        type    cellZoneSet;
+        action  new;
+        source  setToCellZone;
+        sourceInfo
+        {
+            set topSolid;
+        }
+    }
+
+    // bottomAir
+    {
+        name    bottomSolid;
+        type    cellSet;
+        action  new;
+        source  boxToCell;
+        sourceInfo
+        {
+            box (0 0 0)($x_length  $Solid_thickness  $z_thickness);
+        }
+    }
+    {
+        name    bottomSolid;
+        type    cellZoneSet;
+        action  new;
+        source  setToCellZone;
+        sourceInfo
+        {
+            set bottomSolid;
+        }
+    }
+
+);
+
+// ************************************************************************* //
