@@ -1,0 +1,75 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "system/pipe";
+    object      fvSchemes;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+ddtSchemes
+{
+    default 	    Euler;  //steadyState;
+}
+
+gradSchemes
+{
+    default         cellLimited Gauss linear 1;  // Gauss linear;
+    grad(U)         cellLimited Gauss linear 1;	// Add grad(U) scheme
+    grad(T)         cellLimited Gauss linear 1; // Add grad(T) scheme
+
+}
+
+divSchemes
+{
+    default         	none;
+    velocity 		Gauss upwind;
+    energy		$velocity;
+    turbulence		$velocity;
+    
+    div(phi,U)      	$velocity; //bounded Gauss upwind;
+    
+    div(phi,K)      	$energy; //bounded Gauss linear;
+    div(phi,h)      	$energy; //bounded Gauss upwind;
+    
+    div(phi,k)      	$turbulence;
+    div(phi,epsilon) 	$turbulence;//bounded Gauss upwind;
+    div(phi,R)      	$turbulence;//bounded Gauss upwind;
+    
+    div(R)          	Gauss linear;
+    div(Ji,Ii_h)    	Gauss linearUpwind grad(U);  //second order upwind 
+//    div(phi,T)      	Gauss linear; //bounded Gauss upwind; 	// Add div(phi,T) scheme
+    div(((rho*nuEff)*dev2(T(grad(U))))) Gauss linear;
+}
+
+laplacianSchemes
+{
+//    default        Gauss linear corrected;
+    default        		Gauss linear corrected; //Gauss linear limited 1; // Use limited for better stability
+    laplacian(kappaEff,T) 	Gauss linear corrected; // Ensure thermal diffusivity is treated correctly
+}
+
+interpolationSchemes
+{
+    default         linear;
+}
+
+snGradSchemes
+{
+    default         corrected;
+}
+
+fluxRequired
+{
+    default         no;
+    p_rgh;
+    h; 		// Ensure temperature flux is calculated
+}
+
+// ************************************************************************* //

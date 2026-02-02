@@ -1,0 +1,45 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2106                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      boundaryRadiationProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+	fluid_ar_to_tube
+	{
+
+		    type            opaqueDiffusive;
+		    wallAbsorptionEmissionModel
+		    {
+
+				   type            constantAbsorption;
+				   absorptivity    1.0;
+				   emissivity      1.0;
+		    };  
+		
+	}
+
+//---------------------------------------------------------------
+	"fluid_out|fluid_in"
+	{
+		    type           transparent;   //opaqueDiffusive;  // transparent;		    
+		    wallAbsorptionEmissionModel
+		    {
+
+				   type            constantAbsorption;
+				   absorptivity    0.0;
+				   emissivity      0.0;
+
+		     };
+		
+	 }
+// ************************************************************************* //

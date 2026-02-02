@@ -1,0 +1,54 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    note        "mesh decomposition control dictionary";
+    location    "system";
+    object      decomposeParDict;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+numberOfSubdomains  1024;  //1024;  //768;    //128;
+
+method  scotch; //metis;
+
+/*
+regions
+{
+    fluid_cavity
+    {
+        numberOfSubdomains  440;//110;
+        method  metis;
+    }
+
+    fluid_ar
+    {
+        numberOfSubdomains  120; //30;
+        method  scotch;
+    }
+    
+    isolant
+    {
+        numberOfSubdomains  40;//10;
+        method  scotch;
+    }
+    
+    tube
+    {
+        numberOfSubdomains  40;//10;
+        method  scotch;
+    }
+}
+*/
+
+
+// ************************************************************************* //

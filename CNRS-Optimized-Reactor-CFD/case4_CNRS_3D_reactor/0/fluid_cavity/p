@@ -1,0 +1,68 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      binary;
+    class       volScalarField;
+    location    "0/fluid_cavity";
+    object      p;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+pInitial       1e5;
+
+dimensions      [1 -1 -2 0 0 0 0];
+
+internalField   uniform $pInitial;
+
+boundaryField
+{
+//---------------------------------------------------------------------------------------
+	fluid_cavity_to_isolant		// interface
+	    {
+		type            calculated;
+		value           $internalField; //uniform $pInitial;
+	    }
+//---------------------------------------------------------------------------------------	    
+	fluid_cavity_to_tube		// interface
+	    {
+		type            calculated;
+		value           $internalField; //uniform $pInitial;
+	    }
+//---------------------------------------------------------------------------------------	    
+	flux_in			// wall - heat flux constant boundary condition
+	    {	    
+		type            calculated;
+		value           $internalField; //uniform $pInitial;
+//    		type            zeroGradient;  //if you want the flow to adjust freely		
+	    }
+//---------------------------------------------------------------------------------------
+	wall-fluid_cavity	// wall - Insulation
+	    {
+		type            calculated;
+		value           $internalField; //uniform $pInitial;
+	    }
+//---------------------------------------------------------------------------------------
+	 p_out			// outlet 	for CNRS case**
+	    {	        
+		type            calculated;
+		value           $internalField; //uniform $pInitial;
+/*
+		    type            fixedValue;
+		    value           uniform $pInitial;
+*/
+	    }
+//---------------------------------------------------------------------------------------	    
+	 v_in			// inlet 	for CNRS case**
+	    {	    
+		type            calculated;
+		value           $internalField; //uniform $pInitial;
+	    }
+}
+
+// ************************************************************************* //
+

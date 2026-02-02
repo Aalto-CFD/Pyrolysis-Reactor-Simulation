@@ -1,0 +1,219 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2312                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     chtMultiRegionFoam;  
+
+startFrom       	latestTime;
+
+startTime       	0;
+
+stopAt          	endTime;
+
+endTime         	200000;
+
+deltaT          	0.025; 
+
+writeControl    	timeStep;
+
+writeInterval   	1500;
+
+
+purgeWrite      	3;
+
+writeFormat     	binary;
+
+writePrecision  	6;
+
+writeCompression 	off;
+
+timeFormat      	general;
+
+timePrecision   	6;
+
+runTimeModifiable 	yes;  
+
+adjustTimeStep  	no; 
+
+maxCo           	0.5;
+
+maxDi           	120.0;  
+
+OptimisationSwitches
+{
+    fileHandler collated;
+    maxThreadFileBufferSize 2e9;
+}
+
+functions
+{
+  #include "cuttingPlane"
+     
+	wallHeatFlux_fluid_ar
+    	{
+		libs 	("libfieldFunctionObjects.so");
+		type 			wallHeatFlux;
+	    	region 			fluid_ar;
+	    	writeControl    	timeStep;
+       	        writeInterval   	$writeInterval;
+    	}
+    	
+    	wallHeatFlux_fluid_cavity
+    	{
+		libs 	("libfieldFunctionObjects.so");
+		type 			wallHeatFlux;
+	    	region 			fluid_cavity;
+	    	writeControl    	timeStep;
+       	        writeInterval   	$writeInterval;
+    	}
+    	
+    	wallHeatFlux_tube
+    	{
+		libs 	("libfieldFunctionObjects.so");
+		type 			wallHeatFlux;
+	    	region 			tube;
+	    	writeControl    	timeStep;
+       	        writeInterval   	$writeInterval;
+    	}
+    	
+    	wallHeatFlux_isolant    	
+    	{
+		libs 	("libfieldFunctionObjects.so");
+		type 			wallHeatFlux;
+	    	region 			isolant;
+	    	writeControl    	timeStep;
+       	        writeInterval   	$writeInterval;
+    	}
+    	
+    	
+    	gradT_cavity
+		{
+		    	type            	grad;
+		    	libs            	(fieldFunctionObjects);
+		   	field           	T;
+			region          	fluid_cavity;
+			writeControl    	timeStep;
+	       	        writeInterval   	$writeInterval;
+		}
+		
+    	gradT_fluid_ar
+		{
+		    	type            	grad;
+		    	libs            	(fieldFunctionObjects);
+		   	field           	T;
+			region          	fluid_ar;
+			writeControl    	timeStep;
+	       	        writeInterval   	$writeInterval;
+		}		
+
+	probes_fluid_cavity 
+		{
+			libs            (sampling);
+			type            probes;
+			name          probes;
+			writeControl   		timeStep;
+			writeInterval  		$writeInterval;
+			region          	fluid_cavity;
+			fields
+			(
+		 	   T
+			);
+			
+			probeLocations 
+	    		(
+	     			(-0.02248  -0.000113   0.284855)  	
+	     			(-0.02231  -0.000113  -0.002648)  	
+	     			(-0.0175   -0.000113   0.14166)  	// center	     			    
+	    		);
+	  	}
+	  	
+	probes_fluid_ar 
+		{
+			libs            (sampling);
+			type            probes;
+			name            probes;
+			writeControl   		timeStep;
+			writeInterval  		$writeInterval;
+			region          	fluid_ar;
+			fields
+			(
+		 	   T
+			);
+			
+			probeLocations 
+	    		(
+	     			(0.001682 	0.00142 	0.144)  	
+	     			(0 		0 		0.144)  	
+	    		);
+	  	}
+
+	probes_isolant
+		{
+			libs            (sampling);
+			type            probes;
+			name            probes;
+			writeControl   		timeStep;
+			writeInterval  		$writeInterval;
+			region          	isolant;
+			fields
+			(
+		 	   T
+			);
+			
+			probeLocations 
+	    		(
+	     			(0.08156 	0.008131 	0.144)  
+	    		);
+	  	}
+	  	
+	probes_tube 
+		{
+			libs            (sampling);
+			type            probes;
+			name            probes;
+			writeControl   		timeStep;
+			writeInterval  		$writeInterval;
+			region          	tube;
+			fields
+			(
+		 	   T
+			);
+			
+			probeLocations 
+	    		(
+	     			(-0.013079 	-0.007456 	-0.136)  	
+	     			(0.0060254	-0.01384 	-0.414)  			  
+	    		);
+	  	}	  		  				    	
+  	sample_flux_in 
+	  {	  	
+		type 			surfaces;
+		libs 			("libsampling.so");
+		interpolationScheme 	cellPoint;
+		surfaceFormat 		vtk;
+		surfaces
+		(
+    			patch
+    			{
+        			type 	patch;
+        			patches (flux_in);
+    			}
+		);
+		fields (qr T grad(T) wallHeatFlux);  	
+	}   	
+}
+
+// ************************************************************************* //

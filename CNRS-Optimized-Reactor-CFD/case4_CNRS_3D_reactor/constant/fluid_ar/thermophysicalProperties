@@ -1,0 +1,51 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant/pipe";
+    object      thermophysicalProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+thermoType
+{
+    type            heRhoThermo;
+    mixture         pureMixture;
+    transport       const;
+    thermo          hConst;     
+    equationOfState perfectGas;      // rhoConst;
+    specie          specie;
+    energy          sensibleEnthalpy;
+}
+// the gas is Argon  from this website: https://www.engineeringtoolbox.com/argon-d_1414.html 
+
+mixture
+{
+    specie
+    {
+        nMoles          1;
+        molWeight       39.948;
+    }
+    thermodynamics
+    {
+        Cp              520.6;
+        Hf              0;
+    }
+    transport
+    {
+        mu              2.13e-05;
+        Pr              0.693;
+    }
+}
+
+//Thermal Conductivity (Btu/hr ft oF, W/moC)	=  0.0102, 0.0172
+// prandtl = mu.cp / k  = 0.693 and k = 0.016
+// ************************************************************************* //

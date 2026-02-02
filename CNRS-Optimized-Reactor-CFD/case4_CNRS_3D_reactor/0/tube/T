@@ -1,0 +1,108 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      binary;
+    class       volScalarField;
+    location    "0/tube";
+    object      T;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+Tinitial        300;
+
+dimensions      [ 0 0 0 1 0 0 0 ];
+
+internalField   uniform 300;
+
+boundaryField
+{
+//---------------------------------------------------------------------------------------	    
+	tube_to_fluid_cavity
+	    {
+		    type            compressible::turbulentTemperatureRadCoupledMixed;
+		    Tnbr            T;
+		    kappaMethod     solidThermo;
+		    qrNbr           qr;
+		    qr              none;
+		    value           uniform $Tinitial;
+	    }	
+//---------------------------------------------------------------------------------------
+	tube_to_fluid_ar
+	    {
+		    type            compressible::turbulentTemperatureRadCoupledMixed;
+		    Tnbr            T;
+		    kappaMethod     solidThermo;
+		    qrNbr           qr;
+		    qr              none;
+		    value           uniform $Tinitial;
+	    }	
+//---------------------------------------------------------------------------------------
+	tube_to_isolant
+	    {
+		type            compressible::turbulentTemperatureCoupledBaffleMixed;
+		value           $internalField;
+		Tnbr            T;
+		kappaMethod     solidThermo;
+		kappaName       none;
+	    }	
+//---------------------------------------------------------------------------------------
+	w_ext_convec-tube
+	    {
+/*	    
+		type            fixedValue;
+	    	value     	uniform 300;
+*/	    	
+		type            externalWallHeatFluxTemperature;
+		mode		coefficient;  	// Using the coefficient mode for specifying h
+		h 		uniform 10;    	// Heat transfer coefficient in W/(m^2·K)
+	    	Ta        	uniform 300;	// External temperature in K (adjust as needed)
+	    	kappaMethod	solidThermo;
+		kappaName       none;
+	    	value     	uniform 300;	// Initial/Reference temperature value
+	    	
+	    }
+
+//---------------------------------------------------------------------------------------	
+}
+
+// ************************************************************************* //
+
+/*    
+    bottomSolid_bottom    // Heat flux constant boundary condition 
+    {
+	type            externalWallHeatFluxTemperature;
+	mode		flux;
+    	q        	uniform 350;  // Specify the external heat flux value [W/m3]
+    	kappaMethod	fluidThermo;
+    	value     	uniform 300;
+    }
+*/
+/*
+	isolant_to_fluid_cavity	//boundary condition at interface
+	    {
+		type            compressible::turbulentTemperatureCoupledBaffleMixed;
+		value           $internalField;
+		Tnbr            T;
+		kappaMethod     solidThermo;
+		kappaName       none;
+	    }	
+*/
+/*
+	w_ext_convec-isolant    // convective boundary condition 
+	    {
+		type            externalWallHeatFluxTemperature;
+		mode		coefficient;  	// Using the coefficient mode for specifying h
+		h 		7;    		// Heat transfer coefficient in W/(m^2·K)
+	    	Ta        	uniform 300;	// External temperature in K (adjust as needed)
+	    	kappaMethod	fluidThermo;
+		kappaName       none;
+	    	value     	uniform 300;	// Initial/Reference temperature value
+	    }
+*/
+// ************************************************************************* //

@@ -1,0 +1,113 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2312                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+convertToMeters 1;
+D 	        0.0035;    //D=thickness of tube reactor 
+
+xmin 	0;
+xmax 	#calc "($D * 22.5)";
+
+ymin 	0;
+ymax 	#calc "($xmax/10)";
+
+zmin 	0;
+zmax 	#calc "($ymax)/2";
+
+nx  	180;
+ny  	1;
+nz  	1;
+
+simpleGrad_x  1;
+simpleGrad_y  1;
+simpleGrad_z  1;
+
+vertices
+(
+    ($xmin 	$ymin 	$zmin)     // Vertex 0
+    ($xmax 	$ymin 	$zmin)     // Vertex 1
+    ($xmax 	$ymax 	$zmin)     // Vertex 2
+    ($xmin 	$ymax 	$zmin)     // Vertex 3
+    ($xmin 	$ymin 	$zmax)     // Vertex 4
+    ($xmax 	$ymin 	$zmax)     // Vertex 5
+    ($xmax 	$ymax 	$zmax)     // Vertex 6
+    ($xmin 	$ymax 	$zmax)     // Vertex 7
+
+);
+
+blocks
+(
+    hex (0 1 2 3 4 5 6 7) ($nx $ny $nz) simpleGrading ($simpleGrad_x  $simpleGrad_y  $simpleGrad_z)
+);
+
+boundary
+(
+    back
+    {
+        type            empty; 
+        faces           
+        (
+        	(0 1 2 3)
+        );
+    }
+    
+    front
+    {
+        type            empty; 
+        faces           
+        (
+        	(4 5 6 7)
+        );
+    }
+
+    
+    bottom
+    {
+        type            empty;
+        faces          
+        (
+		(0 1 5 4)
+        );
+    }
+    
+    top
+    {
+        type            empty;
+        faces          
+        (
+		(2 3 7 6)
+        );
+    }
+
+    wall_leftparticle
+    {
+        type            patch;
+        faces           
+        (
+        	(0 3 7 4)
+        );
+    }
+    
+    inlet_Radiation
+    {
+        type            wall;
+        faces           
+        (
+        	(1 2 6 5)
+        );
+    }   
+);
+mergePatchPairs
+(
+);
+

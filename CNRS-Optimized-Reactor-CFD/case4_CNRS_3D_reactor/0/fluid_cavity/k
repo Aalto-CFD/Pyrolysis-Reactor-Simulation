@@ -1,0 +1,65 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      binary;
+    class       volScalarField;
+    location    "0/fluid_cavity";
+    object      k;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 2 -2 0 0 0 0];
+
+internalField   uniform 0.1;
+
+boundaryField
+{
+
+	fluid_cavity_to_isolant		// interface
+	    {
+		type            compressible::kqRWallFunction;
+		value           uniform 0.1;
+	    }
+//---------------------------------------------------------------------------------------	    
+	fluid_cavity_to_tube		// interface
+	    {
+		type            compressible::kqRWallFunction;
+		value           uniform 0.1;
+	    }
+//---------------------------------------------------------------------------------------	    
+	flux_in			// patch
+	    {
+		type            compressible::kqRWallFunction;
+		value           uniform 0.1;
+	    }
+//---------------------------------------------------------------------------------------
+	wall-fluid_cavity	// wall
+	    {
+		type            compressible::kqRWallFunction;
+		value           uniform 0.1;
+	    }
+//---------------------------------------------------------------------------------------
+	 p_out			// outlet 	for CNRS case**
+	    {    
+                type            inletOutlet;
+                inletValue      uniform 0.1;
+                value           uniform 0.1;
+	    }
+//---------------------------------------------------------------------------------------	    
+	 v_in			// inlet 	for CNRS case**
+	    {
+		type            inletOutlet;
+		value           uniform 0.1;
+		inletValue      uniform 0.1;
+	    }
+
+}
+// ************************************************************************* //
+
+

@@ -1,0 +1,56 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      solidThermophysicalProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+thermoType
+{
+    type            heSolidThermo;
+    mixture         pureMixture;
+    transport       constIso;
+    thermo          hConst;
+    equationOfState rhoConst;
+    specie          specie;
+    energy          sensibleEnthalpy;
+}
+
+// We use somehow a  " Mullite " according to the data provided by CNRS
+
+mixture
+{
+    specie
+    {
+        nMoles      1;
+        molWeight   100;
+    }
+
+    transport
+    {
+        kappa   5;
+    }
+
+    thermodynamics
+    {
+        Hf      0; 
+        Cp      900; // typically around 750 J/(kg·K) for similar materials
+    }
+
+    equationOfState
+    {
+        rho     2700;
+    }
+
+}
+
+// ************************************************************************* //

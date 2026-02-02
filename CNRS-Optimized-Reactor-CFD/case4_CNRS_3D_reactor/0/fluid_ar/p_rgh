@@ -1,0 +1,51 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      binary;
+    class       volScalarField;
+    location    "0/fluid_ar";
+    object      p_rgh;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+pgInitial	100000;
+
+dimensions      [1 -1 -2 0 0 0 0];
+
+internalField   uniform $pgInitial;
+
+boundaryField
+{
+
+	fluid_ar_to_tube	// interface
+	{
+		type            fixedFluxPressure;
+		value           uniform $pgInitial;
+	}
+
+	fluid_out		// outlet 
+	{		
+//		type		fixedValue;
+//		value		uniform 0; 	
+	
+//		type		zeroGradient;
+
+		type            fixedMean;
+		value           uniform $pgInitial;
+		meanValue       uniform $pgInitial;
+	} 
+
+	fluid_in		// inlet
+	{
+		type            fixedFluxPressure;
+		value           uniform $pgInitial;
+	} 
+
+}
+// ************************************************************************* //
+

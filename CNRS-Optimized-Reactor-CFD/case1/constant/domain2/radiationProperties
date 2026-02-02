@@ -1,0 +1,45 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2312                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      radiationProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+radiation       on;
+
+radiationModel  fvDOM;
+
+fvDOMCoeffs
+{
+    nPhi            4;      
+    nTheta        8;      
+    maxIter      10;    
+    tolerance   1e-3;   
+
+    useSolarLoad      false;
+
+    useExternalBeam   false;  //true;
+    spectralDistribution (2 1);
+}
+
+solverFreq 			10;
+
+absorptionEmissionModel 	none;
+
+scatterModel    		none;
+
+sootModel       		none;
+
+
+
+// ************************************************************************* //
+

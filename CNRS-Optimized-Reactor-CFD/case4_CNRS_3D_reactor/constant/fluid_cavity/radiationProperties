@@ -1,0 +1,69 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      radiationProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+radiation       on; 	// off;
+
+solverFreq   40;   //10;   // 1;  for viewfactor // Number of flow iterations per radiation iteration  
+
+/*
+// ------------------------------------- no radaition model -----------------------------------
+noRadiation
+{
+}
+*/
+
+//--------------------------------------- fvDOM model --------------------------------------
+radiationModel  fvDOM;
+
+fvDOMCoeffs
+    {
+    
+        nPhi        16;          // azimuthal angles in PI/2 on X-Y.
+                                //(from Y to X)
+        nTheta      32;          // polar angles in PI (from Z to X-Y plane)
+        tolerance   1e-3;       // convergence tolerance for radiation
+                                // iteration
+        maxIter     10;          // maximum number of iterations   //10;
+        
+        meshOrientation    (1 1 1); //Mesh orientation used for 2D and 1D
+        useSolarLoad      false;
+        useExternalBeam   false;   //true;
+        spectralDistribution (2 1);
+    }
+
+
+absorptionEmissionModel constantAbsorptionEmission;   // none;
+
+constantAbsorptionEmissionCoeffs
+{
+   absorptivity    absorptivity    [ m^-1 ]         0.0;
+   emissivity      emissivity      [ m^-1 ]         0.0;
+   E               E               [ kg m^-1 s^-3 ] 0.0;
+}
+
+scatterModel    		none; //constantScatter;
+/*
+constantScatterCoeffs 
+	{
+		sigma		sigma    [ m^-1 ]         0.0;
+		C		C	 [ ]		  0.0; 
+	}
+*/
+sootModel       		none;
+
+
+
+
