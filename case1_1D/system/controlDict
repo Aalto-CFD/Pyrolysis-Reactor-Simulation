@@ -1,0 +1,113 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2312                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+application     chtMultiRegionFoam; 
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         400;  
+
+deltaT          0.01; 
+
+writeControl    timeStep;
+
+writeInterval   200;
+
+purgeWrite      0;
+
+writeFormat     binary;
+
+writePrecision  7;
+
+writeCompression uncompressed;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable yes;  
+
+adjustTimeStep   yes; 
+
+maxCo           0.8;
+
+maxDi           10.0;  
+  
+functions
+{
+	wallHeatFlux_cavity
+    	{
+		libs 			("libfieldFunctionObjects.so");
+		type 			wallHeatFlux;
+	    	region 			SOLID_Thickness;
+	    	writeControl    	timeStep;
+       	        writeInterval   	$writeInterval;
+    	}
+
+	wallHeatFlux_tube
+    	{
+		libs 			("libfieldFunctionObjects.so");
+		type 			wallHeatFlux;
+	    	region 			domain2;
+	    	writeControl    	timeStep;
+       	        writeInterval   	$writeInterval;
+    	}    	
+
+	gradT_cavity
+		{
+	    	type            	        grad;
+	    	libs            	        (fieldFunctionObjects);
+	   	field           	        T;
+		region          	        SOLID_Thickness;
+		writeControl    	timeStep;
+       	        writeInterval   	$writeInterval;
+		}
+		
+	gradT_tube
+		{
+	    	type            	        grad;
+	    	libs            	        (fieldFunctionObjects);
+	   	field           	        T;
+		region          	        domain2;
+		writeControl    	timeStep;
+       	        writeInterval   	$writeInterval;
+		}
+	probes 
+		{
+			libs                                  (sampling);
+			type                                probes;
+			name                              probesT;
+			region          	                domain2;
+			writeControl   		timeStep;
+			writeInterval  		$writeInterval;
+
+			fields
+			(
+		 	   T
+			);
+			probeLocations 
+	    		(
+	     			(0.039375 	0 	0.0039375)  
+	     		                
+	    		);
+	  	}				
+				
+}
+// ************************************************************************* //
